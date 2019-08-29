@@ -5,16 +5,31 @@ from pandas import DataFrame
 # For saving strings as CSV
 import pdfkit
 
+# Reading data
 test = pd.read_csv('test.CSV', sep=',')
 
-print(test)
-
-test_string = None
+# Adjusting the format
+test_string = """
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+"""
 for index, row in test.iterrows():
-    print(row)
-    if test_string is None:
-        test_string = row['Body']
-    else:
-        test_string = test_string + '\n\n\n\n' + row['Body']
+        test_string += row['Body'] + '<br><br><br>'
 
-pdfkit.from_string(test_string, 'out.pdf')
+test_string += """
+</body>
+</html>
+"""
+
+# Creating an intermediary HTML file
+generated_html = open("generated_html.html", "w")
+generated_html.write(test_string)
+generated_html.close()
+
+# Generating the PDF
+pdfkit.from_file('generated_html.html', 'out.pdf')
+
